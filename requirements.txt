@@ -1,0 +1,5 @@
+# CaesarCrypt uses only Python's standard library.
+# No external dependencies are required, so this file is intentionally empty.
+#
+# To install (nothing to install):
+#     Nothing needed! Python 3 is the only requirement.
