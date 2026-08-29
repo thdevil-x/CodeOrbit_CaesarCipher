@@ -6,6 +6,13 @@ HTML form and a JSON API, both using the exact same cipher logic.
 > Educational demonstration. Caesar Cipher is **not** secure for real
 > confidential data.
 
+## Live Demo
+
+https://web-iota-taupe-80.vercel.app
+
+- Form UI: https://web-iota-taupe-80.vercel.app/
+- JSON API: `GET /api/encrypt?text=Hello&shift=3`
+
 ---
 
 ## Structure
