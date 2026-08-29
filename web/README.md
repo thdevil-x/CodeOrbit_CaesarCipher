@@ -8,10 +8,11 @@ HTML form and a JSON API, both using the exact same cipher logic.
 
 ## Live Demo
 
-https://web-iota-taupe-80.vercel.app
+https://caesarcrypt.vercel.app
 
-- Form UI: https://web-iota-taupe-80.vercel.app/
+- Form UI: https://caesarcrypt.vercel.app/
 - JSON API: `GET /api/encrypt?text=Hello&shift=3`
+- Backup alias: https://web-iota-taupe-80.vercel.app
 
 ---
 
