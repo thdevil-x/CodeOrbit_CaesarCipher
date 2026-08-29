@@ -169,10 +169,21 @@ CaesarCrypt/
 ├── README.md                   # This file
 ├── .gitignore                  # Git exclusions for Python projects
 │
-└── tests/
-    ├── __init__.py             # Makes tests a Python package
-    └── test_caesar_cipher.py   # Unit tests for the cipher logic
+├── tests/
+│   ├── __init__.py             # Makes tests a Python package
+│   └── test_caesar_cipher.py   # Unit tests for the cipher logic
+│
+└── web/                        # Optional: FastAPI web version (Vercel-ready)
+    ├── api/index.py            # FastAPI app (HTML form + JSON API)
+    ├── caesar_cipher.py        # Cipher logic copy (self-contained deploy)
+    ├── requirements.txt        # fastapi, uvicorn, python-multipart
+    ├── vercel.json             # Vercel Python runtime config
+    └── README.md               # Web version docs + deploy instructions
 ```
+
+The **web version is optional**. The main project is the CLI tool above;
+`web/` is a separate, self-contained deployable web app so you can test
+deploying it on Vercel (see `web/README.md`).
 
 ---
 
