@@ -23,8 +23,29 @@ POST /api/decrypt      -> JSON result (JSON body: {"text": ..., "shift": ...})
 
 from fastapi import FastAPI, Form, HTTPException, Query
 from fastapi.responses import HTMLResponse
-from pydantic import BaseModel
 from html import escape
+
+try:
+    from pydantic import BaseModel, field_validator
+
+    def _reject_bool(*fields):
+        """Build a Pydantic v2 'before' validator that rejects booleans."""
+
+        def decorate(func):
+            return field_validator(*fields, mode="before")(func)
+
+        return decorate
+
+except ImportError:  # pragma: no cover - Pydantic v1 fallback
+    from pydantic import BaseModel, validator
+
+    def _reject_bool(*fields):
+        """Build a Pydantic v1 validator that rejects booleans."""
+
+        def decorate(func):
+            return validator(*fields, allow_reuse=True)(func)
+
+        return decorate
 
 from caesar_cipher import encrypt, decrypt, normalize_shift
 
@@ -148,9 +169,11 @@ def render_page(result=None, error=None, form=None):
 def handle_form(text, shift_raw, mode):
     """Shared logic for the form page. Returns the rendered HTML response."""
     form = {"text": text, "shift": shift_raw, "mode": mode}
-    text = text.strip()
 
-    if not text:
+    if mode not in ("encrypt", "decrypt"):
+        return render_page(error="Invalid mode. Please choose Encrypt or Decrypt.", form=form)
+
+    if not text.strip():
         return render_page(error="Text cannot be empty. Please enter some text.", form=form)
 
     try:
@@ -209,9 +232,19 @@ class CipherRequest(BaseModel):
     text: str
     shift: int = 0
 
+    @_reject_bool("shift")
+    @classmethod
+    def _shift_must_be_int(cls, value):
+        """Reject JSON booleans, which Pydantic would otherwise coerce to 0/1."""
+        if isinstance(value, bool):
+            raise ValueError("The shift key must be a whole number (int), not a boolean.")
+        return value
+
 
 def run_cipher(mode: str, text: str, shift: int):
     """Validate and run encrypt/decrypt, returning a JSON-friendly dict."""
+    if mode not in ("encrypt", "decrypt"):
+        raise HTTPException(status_code=400, detail="Mode must be 'encrypt' or 'decrypt'.")
     if not text.strip():
         raise HTTPException(status_code=400, detail="Text cannot be empty.")
     try:
