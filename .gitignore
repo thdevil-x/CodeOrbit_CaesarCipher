@@ -27,3 +27,5 @@ build/
 dist/
 *.egg-info/
 *.log
+.vercel
+.env*
